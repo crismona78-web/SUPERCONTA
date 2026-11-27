@@ -1,0 +1,769 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Superconta Duel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: joc d'aula per a projector. Marcador d'equips a dalt, targeta de pregunta al centre, botons grossos i "xiclets". Taronja contra turquesa; el lila és la marca neutra. */
+:root{
+  --bg:#f3f0ff;--surface:#ffffff;--surface2:#ebe7fb;--ink:#211a47;--muted:#625b8c;--line:#d6cff0;
+  --ta:#d9480f;--ta-soft:#ffe6d9;--on-ta:#ffffff;
+  --tb:#087f7c;--tb-soft:#d5f5f1;--on-tb:#ffffff;
+  --tm:#b3205a;--tm-soft:#ffe0ec;--on-tm:#ffffff;
+  --tl:#1f5fd0;--tl-soft:#dbe8ff;--on-tl:#ffffff;
+  --brand:#4a3fd1;--brand-deep:#2f2796;--on-brand:#ffffff;
+  --gold:#ffc93c;--on-gold:#3a2a00;
+  --ok:#1b8a4c;--ok-soft:#d9f4e3;--bad:#c93044;--bad-soft:#fde4e7;
+  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+  --dots:rgba(74,63,209,.10);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15122e;--surface:#211c47;--surface2:#2b2559;--ink:#f1eeff;--muted:#aaa3d6;--line:#3b3472;
+    --ta:#ff8a4c;--ta-soft:#4a2616;--on-ta:#2a1100;
+    --tb:#2fd4c8;--tb-soft:#0f3d3d;--on-tb:#03201f;
+    --tm:#ff7aa8;--tm-soft:#4a1630;--on-tm:#2a0612;
+    --tl:#7fb0ff;--tl-soft:#11284d;--on-tl:#04142e;
+    --brand:#9b90ff;--brand-deep:#5a4dd0;--on-brand:#17123a;
+    --gold:#ffd65c;--on-gold:#3a2a00;
+    --ok:#4fd98a;--ok-soft:#173d2a;--bad:#ff7084;--bad-soft:#4a1a22;--dots:rgba(155,144,255,.12);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15122e;--surface:#211c47;--surface2:#2b2559;--ink:#f1eeff;--muted:#aaa3d6;--line:#3b3472;
+  --ta:#ff8a4c;--ta-soft:#4a2616;--on-ta:#2a1100;
+  --tb:#2fd4c8;--tb-soft:#0f3d3d;--on-tb:#03201f;
+  --tm:#ff7aa8;--tm-soft:#4a1630;--on-tm:#2a0612;
+  --tl:#7fb0ff;--tl-soft:#11284d;--on-tl:#04142e;
+  --brand:#9b90ff;--brand-deep:#5a4dd0;--on-brand:#17123a;
+  --gold:#ffd65c;--on-gold:#3a2a00;
+  --ok:#4fd98a;--ok-soft:#173d2a;--bad:#ff7084;--bad-soft:#4a1a22;--dots:rgba(155,144,255,.12);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none!important;}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(var(--dots) 2px,transparent 2.5px);background-size:26px 26px;color:var(--ink);
+  font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-height:100%;}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:18px;min-width:0;}
+.t0{--tc:var(--ta);--ts:var(--ta-soft);--on:var(--on-ta);}
+.t1{--tc:var(--tb);--ts:var(--tb-soft);--on:var(--on-tb);}
+.t2{--tc:var(--tm);--ts:var(--tm-soft);--on:var(--on-tm);}
+.t3{--tc:var(--tl);--ts:var(--tl-soft);--on:var(--on-tl);}
+
+/* capçalera */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.top svg{width:60px;height:52px;flex-shrink:0;}
+.top h1{font:800 clamp(1.7rem,4vw,2.4rem)/1 var(--display);margin:0;letter-spacing:.01em;}
+.top p{margin:3px 0 0;color:var(--muted);font-weight:700;font-size:.92rem;}
+.top .sp{flex:1;}
+
+/* botons */
+.btn{font:800 1.1rem var(--display);letter-spacing:.01em;border:0;border-radius:16px;padding:14px 28px;cursor:pointer;background:var(--brand);color:var(--on-brand);box-shadow:0 5px 0 var(--brand-deep);transition:transform .08s,box-shadow .08s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--brand-deep);}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--brand-deep);}
+.btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:0 5px 0 var(--brand-deep);}
+.btn.sec{background:var(--surface);color:var(--ink);box-shadow:0 5px 0 var(--line);border:2px solid var(--line);padding:12px 24px;}
+.btn.sec:hover{box-shadow:0 7px 0 var(--line);}
+.btn.sec:active{box-shadow:0 1px 0 var(--line);}
+.btn.small{font-size:.9rem;padding:8px 16px;border-radius:12px;box-shadow:0 3px 0 var(--line);}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brand);outline-offset:3px;}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.confirm{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:3px solid var(--bad);border-radius:16px;padding:12px 16px;font-weight:800;}
+.confirm .row{gap:10px;}
+
+/* targetes */
+.card{background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:clamp(18px,3vw,32px);box-shadow:0 6px 0 var(--line);min-width:0;}
+.eyebrow{font:800 .78rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+h2{font:800 clamp(1.5rem,3.4vw,2.1rem)/1.15 var(--display);margin:0;text-wrap:balance;}
+
+/* configuració */
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;}
+.field label{display:block;font-weight:800;font-size:.9rem;margin-bottom:6px;}
+.field input,.field select{width:100%;font:800 1.15rem var(--body);padding:13px 14px;border-radius:14px;background:var(--surface2);color:var(--ink);border:3px solid var(--line);}
+.field.t0 input,.field.t1 input,.field.t2 input,.field.t3 input{border-color:var(--tc);}
+.field.t0 label,.field.t1 label,.field.t2 label,.field.t3 label{color:var(--tc);}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px;}
+.count{display:flex;gap:12px;margin-top:18px;}
+.num{flex:1;min-width:60px;max-width:120px;height:72px;font:800 2.1rem var(--display);border-radius:18px;background:var(--surface);color:var(--ink);border:3px solid var(--line);box-shadow:0 5px 0 var(--line);cursor:pointer;transition:transform .08s,box-shadow .08s;}
+.num:hover{border-color:var(--brand);transform:translateY(-2px);}
+.num:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line);}
+.num.sel{background:var(--brand);color:var(--on-brand);border-color:var(--brand-deep);box-shadow:0 5px 0 var(--brand-deep);}
+.num:focus-visible{outline:3px solid var(--brand);outline-offset:3px;}
+.rules{list-style:none;margin:22px 0 0;padding:18px 20px;background:var(--surface2);border-radius:18px;display:grid;gap:10px;font-weight:700;}
+.rules li{display:flex;gap:12px;align-items:baseline;}
+.rules li::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--gold);flex-shrink:0;transform:translateY(1px);}
+.note{color:var(--muted);font-size:.85rem;font-weight:700;margin:10px 0 0;}
+
+/* marcador */
+.board{display:grid;gap:14px;grid-template-columns:1fr 1fr;}
+.board.n1{grid-template-columns:1fr;}
+.board.n3{grid-template-columns:repeat(3,1fr);}
+.board.n4{grid-template-columns:repeat(4,1fr);}
+.team{position:relative;border-radius:22px;padding:14px 20px 12px;background:var(--ts);border:3px solid var(--tc);color:var(--ink);display:grid;grid-template-columns:1fr auto;grid-template-areas:"n s" "p s";align-items:center;column-gap:12px;transition:transform .2s,background .2s;min-width:0;}
+.team .tn{grid-area:n;font:800 clamp(1rem,2.4vw,1.35rem)/1.15 var(--display);overflow-wrap:anywhere;}
+.team .ts{grid-area:s;font:800 clamp(2.2rem,6vw,3.6rem)/1 var(--display);font-variant-numeric:tabular-nums;}
+.team .tp{grid-area:p;font:800 .8rem var(--body);letter-spacing:.06em;text-transform:uppercase;min-height:1.4em;}
+.team.on{background:var(--tc);color:var(--on);transform:translateY(-3px) scale(1.02);box-shadow:0 7px 0 rgba(0,0,0,.18);}
+.team.win{background:var(--tc);color:var(--on);}
+.team.out{opacity:.45;}
+.board.n3 .team,.board.n4 .team{grid-template-columns:1fr;grid-template-areas:"n" "s" "p";text-align:center;row-gap:2px;padding:12px 10px;}
+.board.n3 .team .ts,.board.n4 .team .ts{font-size:clamp(2rem,4.6vw,3rem);}
+.gain{position:absolute;right:14px;top:-16px;background:var(--gold);color:var(--on-gold);font:800 1.3rem var(--display);padding:3px 14px;border-radius:999px;animation:rise 1.4s ease forwards;pointer-events:none;}
+@keyframes rise{0%{transform:translateY(14px) scale(.6);opacity:0;}20%{transform:translateY(0) scale(1.1);opacity:1;}80%{opacity:1;}100%{transform:translateY(-20px);opacity:0;}}
+
+/* pregunta */
+.qhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;}
+.qcount{font:800 .95rem var(--body);color:var(--muted);}
+.dots{display:flex;gap:6px;margin:10px 0 16px;}
+.dots i{flex:1;height:8px;border-radius:4px;background:var(--line);}
+.dots i.d{background:var(--brand);} .dots i.c{background:var(--gold);}
+.turn{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--ts);border:3px solid var(--tc);border-radius:16px;padding:10px 16px;font-weight:800;font-size:1.05rem;margin-bottom:16px;}
+.turn .worth{font:800 .95rem var(--display);background:var(--gold);color:var(--on-gold);padding:2px 12px;border-radius:999px;white-space:nowrap;}
+.turn.steal{animation:bounce .5s ease;}
+@keyframes bounce{0%{transform:translateX(0);}25%{transform:translateX(-10px);}50%{transform:translateX(8px);}75%{transform:translateX(-4px);}100%{transform:translateX(0);}}
+.qtext{font:800 clamp(1.3rem,3.2vw,2rem)/1.25 var(--body);margin:0 0 20px;padding:18px 20px;background:var(--surface2);border-radius:20px;overflow-wrap:anywhere;}
+.ask{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:800;color:var(--muted);margin:0 0 10px;}
+
+/* opcions */
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:800 clamp(1rem,2.2vw,1.2rem) var(--body);padding:15px 18px;border-radius:16px;background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line);cursor:pointer;transition:transform .08s,box-shadow .08s,border-color .1s;}
+.opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--brand);box-shadow:0 6px 0 var(--line);}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--line);}
+.opt:disabled{cursor:default;}
+.opt.sel{border-color:var(--brand);background:var(--surface2);box-shadow:0 4px 0 var(--brand);}
+.opt.elim{opacity:.55;background:var(--surface2);text-decoration:line-through;}
+.opt.right{border-color:var(--ok);background:var(--ok-soft);box-shadow:0 4px 0 var(--ok);}
+.opt.dim{opacity:.45;}
+.opt small{margin-left:auto;font:700 .72rem var(--body);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;color:var(--bad);white-space:nowrap;}
+.code{font:800 .95rem var(--display);background:var(--brand);color:var(--on-brand);border-radius:8px;padding:1px 9px;min-width:3.1em;text-align:center;flex-shrink:0;}
+.bal{display:grid;grid-template-columns:1fr 1fr;}
+.side{display:grid;gap:10px;align-content:start;padding:0 18px 0 0;min-width:0;}
+.side.r{padding:0 0 0 18px;border-left:4px solid var(--ink);}
+.side h3{margin:0;font:800 .8rem var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:4px solid var(--ink);padding-bottom:8px;margin-bottom:2px;}
+.accs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;}
+.actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:18px;}
+.cnt{font-weight:800;color:var(--brand);}
+
+/* Fase 2: arrossegar comptes cap a cada pregunta */
+.match{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:26px;align-items:start;}
+.match h3{margin:0 0 12px;font:800 .8rem var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:4px solid var(--ink);padding-bottom:8px;}
+.qcol,.ocol .list{display:grid;gap:12px;}
+.slotcard{background:var(--surface2);border-radius:18px;padding:14px;display:grid;gap:10px;border:3px solid transparent;transition:border-color .1s;}
+.slotcard.over{border-color:var(--brand);}
+.slotq{margin:0;font-weight:800;font-size:1.05rem;overflow-wrap:anywhere;}
+.slot{display:flex;align-items:center;gap:10px;width:100%;min-height:58px;padding:10px 14px;border:3px dashed var(--muted);border-radius:14px;background:var(--surface);color:var(--muted);font:700 .95rem var(--body);text-align:left;cursor:pointer;}
+.slot.ready{border-color:var(--brand);color:var(--brand);}
+.slotcard.over .slot{border-color:var(--brand);background:var(--surface);}
+.slot.filled{border-style:solid;border-color:var(--brand);color:var(--ink);font-weight:800;font-size:1rem;box-shadow:0 3px 0 var(--brand);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;}
+.slot.locked{border-style:solid;border-color:var(--ok);background:var(--ok-soft);color:var(--ink);box-shadow:0 3px 0 var(--ok);cursor:default;}
+.slot.wrong{border-style:solid;border-color:var(--bad);background:var(--bad-soft);color:var(--ink);cursor:default;animation:bounce .45s ease;}
+.slot.reveal{border-style:solid;border-color:var(--muted);background:var(--surface);color:var(--ink);box-shadow:0 3px 0 var(--line);cursor:default;}
+.slot small{margin-left:auto;font:700 .72rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--ok);white-space:nowrap;}
+.slot.wrong small{color:var(--bad);}
+.slot.reveal small{color:var(--muted);}
+.badn{margin:0;font:700 .8rem var(--body);color:var(--bad);}
+.chip{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;}
+.chip.used{opacity:.3;}
+.chip:disabled{cursor:default;}
+.lifted{opacity:.35;}
+.ghost{position:fixed;z-index:60;pointer-events:none;display:flex;gap:10px;align-items:center;padding:12px 16px;border-radius:16px;background:var(--surface);color:var(--ink);border:3px solid var(--brand);box-shadow:0 10px 24px rgba(0,0,0,.28);font:800 1rem var(--body);transform:translate(-50%,-50%);max-width:300px;}
+.warn{color:var(--bad);font-weight:800;margin:10px 0 0;min-height:1.4em;}
+
+/* veredicte */
+.verdict{margin-top:20px;padding:16px 18px;border-radius:18px;font-weight:700;border:3px solid var(--ok);background:var(--ok-soft);}
+.verdict.none{border-color:var(--bad);background:var(--surface2);}
+.verdict .vt{font:800 1.35rem var(--display);display:block;margin-bottom:4px;}
+.verdict.none .vt{color:var(--bad);} .verdict.yes .vt{color:var(--ok);}
+
+/* pantalles intermèdia i final */
+.center{text-align:center;display:grid;gap:14px;justify-items:center;}
+.gains{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px;}
+.gains div{border-radius:18px;padding:14px;background:var(--ts);border:3px solid var(--tc);font-weight:800;}
+.gains b{display:block;font:800 2rem/1.1 var(--display);}
+.big{font:800 clamp(2rem,6vw,3.6rem)/1.05 var(--display);margin:0;text-wrap:balance;}
+.rank{display:grid;gap:8px;width:100%;max-width:480px;}
+.rank div{display:flex;gap:10px;align-items:baseline;background:var(--ts);border:3px solid var(--tc);border-radius:14px;padding:8px 14px;font-weight:800;text-align:left;}
+.rank b{margin-left:auto;font:800 1.3rem var(--display);}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30;}
+@media (max-width:700px){
+  .match{grid-template-columns:1fr;gap:20px;}
+}
+@media (max-width:560px){
+  .setup-grid,.opts,.gains{grid-template-columns:1fr!important;}
+  .bal{grid-template-columns:1fr;gap:18px;}
+  .side,.side.r{padding:0;border-left:0;}
+  .board{gap:8px;}
+  .board.n3,.board.n4{grid-template-columns:1fr 1fr;}
+  .team{padding:10px 12px;}
+  .gain{right:8px;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <svg viewBox="0 0 56 52" aria-hidden="true">
+      <path d="M28 8V42M14 44H42" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M8 14H48" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M8 14L3 29M8 14L13 29M48 14L43 29M48 14L53 29" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M0 29H16A8 8 0 0 1 0 29Z" fill="var(--ta)"/>
+      <path d="M40 29H56A8 8 0 0 1 40 29Z" fill="var(--tb)"/>
+      <circle cx="28" cy="7" r="4" fill="var(--gold)"/>
+    </svg>
+    <div><h1>Superconta Duel</h1><p>Masses patrimonials i comptes, per equips</p></div>
+    <span class="sp"></span>
+    <button class="btn sec small" type="button" data-act="home" id="btn-home" hidden>Torna a l'inici</button>
+    <button class="btn sec small" type="button" data-act="mute" id="btn-mute">So: sí</button>
+  </header>
+
+  <section class="confirm" id="confirm" role="alertdialog" aria-label="Tornar a l'inici" hidden>
+    <span>Tornar a l'inici? Es perdran els punts d'aquesta partida.</span>
+    <span class="row"><button class="btn small" type="button" data-act="home-yes">Sí, torna a l'inici</button><button class="btn sec small" type="button" data-act="home-no">Continua jugant</button></span>
+  </section>
+
+  <section id="board" class="board" hidden aria-label="Marcador"></section>
+
+  <!-- CONFIGURACIÓ -->
+  <section class="card" id="v-setup">
+    <p class="eyebrow">Abans de començar</p>
+    <h2>Quants equips jugueu?</h2>
+    <div class="count" role="group" aria-label="Nombre d'equips">
+      <button type="button" class="num" data-act="n" data-v="1" aria-pressed="false">1</button>
+      <button type="button" class="num sel" data-act="n" data-v="2" aria-pressed="true">2</button>
+      <button type="button" class="num" data-act="n" data-v="3" aria-pressed="false">3</button>
+      <button type="button" class="num" data-act="n" data-v="4" aria-pressed="false">4</button>
+    </div>
+    <div class="setup-grid">
+      <div class="field t0" id="f0"><label for="in-n0">Equip 1</label><input id="in-n0" type="text" maxlength="18" value="Equip Taronja" autocomplete="off"></div>
+      <div class="field t1" id="f1"><label for="in-n1">Equip 2</label><input id="in-n1" type="text" maxlength="18" value="Equip Turquesa" autocomplete="off"></div>
+      <div class="field t2" id="f2" hidden><label for="in-n2">Equip 3</label><input id="in-n2" type="text" maxlength="18" value="Equip Maduixa" autocomplete="off"></div>
+      <div class="field t3" id="f3" hidden><label for="in-n3">Equip 4</label><input id="in-n3" type="text" maxlength="18" value="Equip Blau" autocomplete="off"></div>
+    </div>
+    <p class="note">Trieu un nom d'equip inventat. No cal posar noms de persones.</p>
+    <div class="opts">
+      <div class="field"><label for="in-per">Preguntes per fase</label>
+        <select id="in-per"><option value="6">6 (partida ràpida)</option><option value="8" selected>8</option><option value="10">10</option><option value="12">12 (partida llarga)</option></select></div>
+      <div class="field"><label for="in-plan">Fases a jugar</label>
+        <select id="in-plan">
+          <option value="123" selected>Les 3 fases (partida completa)</option>
+          <option value="1">Només Fase 1 · Masses</option>
+          <option value="2">Només Fase 2 · Un compte per pregunta</option>
+          <option value="3">Només Fase 3 · Operació completa</option>
+          <option value="12">Fases 1 i 2</option>
+          <option value="23">Fases 2 i 3</option>
+        </select></div>
+      <div class="field"><label for="in-allow">Fase 2: errors permesos per torn</label>
+        <select id="in-allow"><option value="0">Cap: el torn rebota al primer error</option><option value="1" selected>1 error</option><option value="2">2 errors</option></select></div>
+    </div>
+    <ul class="rules">
+      <li id="rule-turn">Els torns es van alternant. Quan et toca, tens una sola oportunitat.</li>
+      <li>Fase 1: classifiqueu l'element a la seva massa patrimonial. Encert: 10 punts.</li>
+      <li>Fase 2: arrossegueu cada compte a la pregunta que li correspon. Si no hi va, es veu a l'instant i cal provar una altra cosa. Encert: 16 punts.</li>
+      <li>Fase 3: trieu tots els comptes que intervenen en l'operació. Encert: 20 punts.</li>
+      <li id="rule-rb"></li>
+      <li id="rule-end"></li>
+    </ul>
+    <div class="row" style="margin-top:24px;"><button class="btn" type="button" data-act="start">Comença el duel</button></div>
+  </section>
+
+  <!-- JOC -->
+  <section class="card" id="v-game" hidden></section>
+
+  <!-- INTERMEDI -->
+  <section class="card center" id="v-inter" hidden></section>
+
+  <!-- FINAL -->
+  <section class="card center" id="v-final" hidden></section>
+</div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+/* ---------- DADES ---------- */
+const DATA = [
+ ["Un camió propietat de l'empresa.","Actiu no corrent"],
+ ["Préstec bancari a retornar en 6 anys.","Passiu no corrent"],
+ ["Deutes d'alguns clients per la venda de productes.","Actiu corrent"],
+ ["Factura pendent de cobrament per venda de productes.","Actiu corrent"],
+ ["Diners en comptes corrents bancaris.","Actiu corrent"],
+ ["Factura pendent de pagament per compra de productes.","Passiu corrent"],
+ ["Mobiliari de l'empresa.","Actiu no corrent"],
+ ["Patent de l'empresa.","Actiu no corrent"],
+ ["Deute amb Hisenda per liquidació d'IVA.","Passiu corrent"],
+ ["Lletres de canvi a 90 dies pendents de cobrament.","Actiu corrent"],
+ ["Capital social.","Patrimoni net"],
+ ["Lletres de canvi a 60 dies, pendents de pagament.","Passiu corrent"],
+ ["Diners en efectiu.","Actiu corrent"],
+ ["Solar propietat de l'empresa.","Actiu no corrent"],
+ ["Un local comercial propietat de l'empresa.","Actiu no corrent"],
+ ["Préstec bancari a retornar en 9 mesos.","Passiu corrent"],
+ ["Factura pendent de pagament a 2 anys, per compra de maquinària.","Passiu no corrent"],
+ ["Equipaments informàtics.","Actiu no corrent"],
+ ["Un programa informàtic.","Actiu no corrent"],
+ ["Maquinària.","Actiu no corrent"],
+ ["Estoc de matèria prima.","Actiu corrent"],
+ ["Estoc de productes per vendre.","Actiu corrent"],
+ ["Benefici acumulat.","Patrimoni net"]
+];
+const ACC = {
+ 100:"Capital social",129:"Resultat de l'exercici",170:"Deutes a llarg termini amb entitats de crèdit",
+ 173:"Proveïdors d'immobilitzat a llarg termini",203:"Propietat industrial",206:"Aplicacions informàtiques",
+ 210:"Terrenys i béns naturals",211:"Construccions",212:"Instal·lacions tècniques",213:"Maquinària",214:"Utillatge",
+ 215:"Altres instal·lacions",216:"Mobiliari",217:"EPI",218:"Elements de transport",219:"Un altre immobilitzat material",
+ 400:"Proveïdors",410:"Creditors per prestacions de serveis",430:"Clients",440:"Deutors",600:"Compra de mercaderies",700:"Venda de mercaderies",
+ 520:"Deutes a curt termini amb entitats de crèdit",523:"Proveïdors d'immobilitzat a curt termini",
+ 570:"Caixa, euros",572:"Bancs i institucions de crèdit c/c vista, euros"
+};
+const E_BUY = "Les compres de mercaderies es registren al compte 600. El deute amb el proveïdor va a Proveïdors (400).";
+const E_SELL = "Les vendes de mercaderies es registren al compte 700. Encara no s'ha cobrat, així que el dret de cobrament va a Clients (430).";
+// t: enunciat · sets: combinació de comptes vàlida (Fase 3) · opts: comptes que es mostren · e: explicació
+// qs: les preguntes per separat de la Fase 2, [compte correcte, pregunta]
+const Q_BUY = [[600,"Quan l'empresa compra mercaderies, quin compte reflecteix la compra?"],[400,"Quin compte reflecteix el deute que es genera amb el proveïdor?"]];
+const Q_SELL = [[700,"Quan l'empresa ven mercaderies, quin compte reflecteix la venda?"],[430,"Quin compte reflecteix el dret de cobrament que es genera?"]];
+const OPS = [
+ {t:"Es constitueix una empresa amb 60.000 € que es dipositen al compte corrent bancari.",
+  sets:[[572,100]], opts:[572,100,129,170,570,430,400,520],
+  qs:[[572,"Quin compte reflecteix els diners que s'ingressen al compte corrent del banc?"],[100,"Quin compte reflecteix el que aporten els socis a l'empresa?"]],
+  e:"Bancs (572) pels diners ingressats i Capital social (100) pel que aporten els socis."},
+ {t:"Compra un ordinador per 750 € que pagarà a 90 dies.",
+  sets:[[217,523]], opts:[217,523,206,216,400,173,572,410],
+  qs:[[217,"Quin compte reflecteix l'ordinador que compra l'empresa?"],[523,"Quin compte reflecteix el deute pel qual es pagarà d'aquí a 90 dies?"]],
+  e:"L'ordinador és un EPI (217). Es paga en menys d'un any a un proveïdor d'immobilitzat: 523. Proveïdors (400) és només per a mercaderies."},
+ {t:"Compra una furgoneta de repartiment per 30.000 €. S'acorda el pagament de 1.000 € al comptat amb un xec i la resta en 18 mesos.",
+  sets:[[218,523,173,572]], opts:[218,572,173,523,400,570,213,170],
+  qs:[[218,"Quin compte reflecteix la furgoneta de repartiment que es compra?"],
+      [523,"Quin compte reflecteix els 1.000 € que es pagaran de seguida (deute a curt termini amb el proveïdor)?"],
+      [173,"Quin compte reflecteix els 29.000 € restants, que es pagaran d'aquí a 18 mesos?"],
+      [572,"Quin compte reflecteix la sortida de diners en pagar els 1.000 € amb xec?"]],
+  e:"1) Compra: Elements de transport (218) pels 30.000 € i es genera tot el deute: 1.000 € que es pagaran de seguida a Proveïdors d'immobilitzat a c/t (523) i 29.000 € a 18 mesos a l/t (173). 2) Pagament: 1.000 € amb xec; baixa el 523 i baixa Bancs (572)."},
+ {t:"Compra una màquina per 16.000 € que es pagarà en 3 terminis: un 25% en 3 mesos, un 25% en 6 mesos i la resta en 18 mesos.",
+  sets:[[213,523,173]], opts:[213,523,173,214,400,170,572,520],
+  qs:[[213,"Quin compte reflecteix la màquina que es compra?"],
+      [523,"Quin compte reflecteix els 8.000 € (25% + 25%) que es pagaran en menys d'un any?"],
+      [173,"Quin compte reflecteix els 8.000 € restants, que es pagaran a 18 mesos?"]],
+  e:"Maquinària (213). El 25% + 25% (8.000 €) es paga en menys d'un any: 523. El 50% restant (8.000 €) a 18 mesos: 173."},
+ {t:"Es demana un préstec bancari de 3.000 € que es tornarà en 3 mesos.",
+  sets:[[572,520]], opts:[572,520,170,100,570,400,430,523],
+  qs:[[572,"Quin compte reflecteix els diners que entren al banc?"],[520,"Quin compte reflecteix el deute amb el banc, que es tornarà en 3 mesos?"]],
+  e:"Entren diners al banc (572) i el deute es retorna en menys d'un any: curt termini (520)."},
+ {t:"Es demana un préstec bancari de 30.000 € que es pagarà d'aquí a 2 anys.",
+  sets:[[572,170]], opts:[572,170,520,173,100,570,523,400],
+  qs:[[572,"Quin compte reflecteix els diners que entren al banc?"],[170,"Quin compte reflecteix el deute amb el banc, que es pagarà d'aquí a 2 anys?"]],
+  e:"Bancs (572) pels diners rebuts. A 2 anys és llarg termini: 170."},
+ {t:"Es demana un préstec bancari de 15.000 € que es retornarà en 3 anualitats.",
+  sets:[[572,170,520]], opts:[572,170,520,173,100,570,523,400],
+  qs:[[572,"Quin compte reflecteix els diners que entren al banc?"],
+      [520,"Quin compte reflecteix la part del deute que es tornarà durant el primer any (5.000 €)?"],
+      [170,"Quin compte reflecteix la part del deute que es tornarà en els anys següents (10.000 €)?"]],
+  e:"La quota del primer any (5.000 €) és curt termini (520) i les altres dues (10.000 €) llarg termini (170). Els diners entren al banc (572)."},
+ {t:"Compra mercaderies per 3.000 € a crèdit.",
+  sets:[[600,400]], opts:[600,400,410,523,430,440,572,570], qs:Q_BUY, e:E_BUY},
+ {t:"Compra mercaderies per 5.000 € a crèdit.",
+  sets:[[600,400]], opts:[600,400,410,523,173,570,700,217], qs:Q_BUY, e:E_BUY},
+ {t:"Compra mercaderies per 1.500 € a crèdit.",
+  sets:[[600,400]], opts:[600,400,440,520,430,572,410,129], qs:Q_BUY, e:E_BUY},
+ {t:"Compra mercaderies per 10.000 €. Es paga un 10% al comptat en efectiu i la resta a 30 dies.",
+  sets:[[600,400,570]], opts:[600,400,570,572,523,410,430,700],
+  qs:[[600,"Quan l'empresa compra mercaderies, quin compte reflecteix la compra?"],
+      [400,"Quin compte reflecteix el deute que es genera amb el proveïdor?"],
+      [570,"Quin compte reflecteix la sortida de diners dels 1.000 € que es paguen al comptat en efectiu?"]],
+  e:"1) Compra: Compra de mercaderies (600) i Proveïdors (400) pels 10.000 € complets. 2) Pagament: 1.000 € en efectiu; baixa Proveïdors (400) i baixa Caixa (570). Els 9.000 € restants queden pendents a Proveïdors."},
+ {t:"Ven mercaderies per 4.000 € a crèdit.",
+  sets:[[700,430]], opts:[700,430,440,400,570,572,100,129], qs:Q_SELL, e:E_SELL},
+ {t:"Ven mercaderies per 6.000 € a crèdit.",
+  sets:[[700,430]], opts:[700,430,440,400,410,572,600,100], qs:Q_SELL, e:E_SELL},
+ {t:"Ven mercaderies per 3.500 € a crèdit.",
+  sets:[[700,430]], opts:[700,430,440,400,570,520,100,523], qs:Q_SELL, e:E_SELL},
+ {t:"Ven mercaderies per 8.000 €. Es cobra un 10% al comptat per transferència i la resta a 30 dies.",
+  sets:[[700,430,572]], opts:[700,430,570,572,440,400,410,129],
+  qs:[[700,"Quan l'empresa ven mercaderies, quin compte reflecteix la venda?"],
+      [430,"Quin compte reflecteix el dret de cobrament que es genera?"],
+      [572,"Quin compte reflecteix els diners que entren al banc pels 800 € cobrats per transferència?"]],
+  e:"1) Venda: Venda de mercaderies (700) i Clients (430) pels 8.000 € complets. 2) Cobrament: 800 € per transferència; baixa Clients (430) i puja Bancs (572). Els 7.200 € restants queden pendents a Clients."}
+];
+
+/* ---------- UTILITATS ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+// dóna prioritat a les preguntes que encara no han sortit
+function pick(n, ids, seen){
+  let chosen = shuffle(ids.filter(i=>!seen.has(i))).slice(0,n);
+  if(chosen.length<n){
+    seen.clear();
+    chosen = chosen.concat(shuffle(ids.filter(i=>!chosen.includes(i))).slice(0,n-chosen.length));
+  }
+  chosen.forEach(i=>seen.add(i));
+  return shuffle(chosen);
+}
+
+/* ---------- SO ---------- */
+let AC=null, muted=false;
+function sfx(k){
+  if(muted) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const seq = k==='ok'?[[523,0],[659,.09],[784,.18]] : k==='bad'?[[220,0],[165,.13]] : [[392,0],[523,.1],[659,.2],[784,.3],[1047,.42]];
+    seq.forEach(([f,t])=>{
+      const o=AC.createOscillator(), g=AC.createGain();
+      o.type = k==='bad'?'sawtooth':'triangle'; o.frequency.value=f;
+      o.connect(g); g.connect(AC.destination);
+      const s=AC.currentTime+t;
+      g.gain.setValueAtTime(.0001,s); g.gain.exponentialRampToValueAtTime(.16,s+.02); g.gain.exponentialRampToValueAtTime(.0001,s+.24);
+      o.start(s); o.stop(s+.27);
+    });
+  }catch(e){}
+}
+
+/* ---------- ESTAT ---------- */
+const BASE = {1:10, 2:16, 3:20};
+const PHASE_NAMES = {1:"Fase 1 · Masses patrimonials", 2:"Fase 2 · Un compte per pregunta", 3:"Fase 3 · Operació completa"};
+const PHASE_DESC = {1:"classificar elements a la seva massa patrimonial.", 2:"arrossegar cada compte a la pregunta que li correspon.", 3:"triar tots els comptes que intervenen en una operació."};
+const MASS_LEFT = ["Actiu no corrent","Actiu corrent"];
+const MASS_RIGHT = ["Patrimoni net","Passiu no corrent","Passiu corrent"];
+const SHARED = new Set(); // les fases 2 i 3 comparteixen operacions: dins d'una partida no es repeteixen mentre n'hi hagi de noves
+const seen = {1:new Set(), 2:SHARED, 3:SHARED};
+const MAXTRY = 3; // intents màxims per pregunta: l'equip que respon + 2 rebots
+const S = {n:2, names:["","","",""], per:8, plan:[1,2,3], pi:0, phase:1, ids:[], order:[], qi:0, total:0,
+  first:0, tcount:0, scores:[0,0,0,0], phaseStart:[0,0,0,0], pool:[0,1], own:0, att:0, stage:'ask', elim:new Set(), sel:new Set(),
+  tb:false, pop:null, winner:-1, won:0,
+  slots:[], place:[], lock:[], rev:[], bad:[], pick:null, note:'', rf:null, errs:0, allow:1, busy:false, flash:null, tok:0};
+
+function show(v){
+  ['setup','game','inter','final'].forEach(k=>{ $('v-'+k).hidden = k!==v; });
+  $('board').hidden = v==='setup';
+  S.view = v; $('btn-home').hidden = v==='setup'; $('confirm').hidden = true;
+}
+const maxTry = () => Math.min(S.pool.length, MAXTRY);
+const activeTeam = () => S.stage==='done' ? -1 : S.pool[(S.own + S.att) % S.pool.length];
+const pts = () => S.att===0 ? BASE[S.phase] : BASE[S.phase]/2;
+
+function renderBoard(act, win){
+  $('board').className = 'board n'+S.n;
+  let h='';
+  for(let i=0;i<S.n;i++){
+    const on = act===i, w = win.includes(i), out = S.tb && !S.pool.includes(i);
+    const pill = on ? (S.att===0 ? "Et toca!" : "Pot robar!") : (w ? "Guanyadors!" : "");
+    h += `<div class="team t${i}${on?' on':''}${w?' win':''}${out?' out':''}"><span class="tn">${esc(S.names[i])}</span><span class="ts">${S.scores[i]}</span><span class="tp">${pill}</span>`;
+    if(S.pop && S.pop.team===i) h += `<span class="gain">+${S.pop.pts}</span>`;
+    h += `</div>`;
+  }
+  $('board').innerHTML = h;
+  S.pop = null;
+}
+
+/* ---------- FLUX ---------- */
+function startGame(){
+  const names=[];
+  for(let i=0;i<S.n;i++){
+    let nm = $('in-n'+i).value.trim() || ("Equip "+(i+1));
+    if(names.some(x=>x.toLowerCase()===nm.toLowerCase())) nm += ` (${i+1})`;
+    names.push(nm);
+  }
+  S.names=names;
+  S.per = Number($('in-per').value);
+  S.plan = $('in-plan').value.split('').map(Number);
+  S.allow = Number($('in-allow').value);
+  resetMatch();
+}
+function resetMatch(){
+  S.scores=Array(S.n).fill(0); S.pool=[...Array(S.n).keys()]; S.first=0; S.tcount=0; S.pi=0; S.tb=false;
+  beginPhase();
+}
+function beginPhase(){
+  S.phase = S.plan[S.pi]; S.tb=false; S.pool=[...Array(S.n).keys()]; S.phaseStart=[...S.scores];
+  S.ids = pick(S.per, (S.phase===1?DATA:OPS).map((_,i)=>i), seen[S.phase]);
+  S.total=S.ids.length; S.qi=0; nextQ();
+}
+function beginTiebreak(){
+  const mx=Math.max(...S.scores);
+  S.pool = S.scores.map((s,i)=>s===mx?i:-1).filter(i=>i>=0); // només juguen els equips empatats
+  S.tb=true; S.phase=3; S.phaseStart=[...S.scores]; S.tcount=0;
+  S.ids = pick(Math.max(2,S.pool.length), OPS.map((_,i)=>i), seen[3]); S.total=S.ids.length; S.qi=0; nextQ();
+}
+function nextQ(){
+  if(S.qi>=S.total){ endPhase(); return; }
+  S.own = (S.first + S.tcount) % S.pool.length; S.tcount++; S.att=0;
+  S.stage='ask'; S.elim=new Set(); S.sel=new Set(); S.winner=-1; S.won=0; S.pick=null; S.note='';
+  S.errs=0; S.busy=false; S.flash=null; S.tok++;
+  if(S.phase>=2){
+    const op = OPS[S.ids[S.qi]];
+    S.order = [...op.opts].sort((a,b)=>a-b); // sempre ordenats per codi
+    S.slots = op.qs; S.place = op.qs.map(()=>null); S.lock = op.qs.map(()=>false); S.rev = op.qs.map(()=>false); S.bad = op.qs.map(()=>new Set());
+  } else S.order = [];
+  show('game'); renderAll();
+}
+function renderAll(){ renderBoard(activeTeam(), []); renderGame(); }
+
+function massBtn(m, done, correct){
+  const el = S.elim.has(m), right = done && m===correct;
+  const cls = 'opt' + (el?' elim':'') + (right?' right':'') + (done&&!right&&!el?' dim':'');
+  return `<button type="button" class="${cls}" data-act="mass" data-v="${esc(m)}"${(done||el)?' disabled':''}><span>${esc(m)}</span>${el?'<small>descartada</small>':''}</button>`;
+}
+function matchHtml(done){
+  const placed = new Set(S.place.filter(c=>c!==null));
+  const nLock = S.lock.filter(Boolean).length;
+  const left = Math.max(0, S.allow - S.errs);
+  let h = `<p class="ask"><span>Arrossega cada compte a la pregunta que li correspon</span><span class="cnt">${nLock} de ${S.slots.length} col·locats${done?'':` · errors permesos: ${left}`}</span></p><div class="match"><div class="qcol"><h3>Preguntes</h3>`;
+  h += S.slots.map((s,i)=>{
+    const c=S.place[i], rev=S.rev[i], fl = (S.flash && S.flash.slot===i) ? S.flash.code : null;
+    let btn;
+    if(fl!==null) btn = `<button type="button" class="slot wrong" disabled><span class="code">${fl}</span><span>${esc(ACC[fl])}</span><small>no va aquí</small></button>`;
+    else if(c===null) btn = `<button type="button" class="slot${S.pick!==null?' ready':''}" data-act="slot" data-v="${i}"${(done||S.busy)?' disabled':''}>${S.pick!==null?'Toca aquí per col·locar el compte triat':'Deixa aquí el compte'}</button>`;
+    else btn = `<button type="button" class="slot ${rev?'reveal':'locked'}" disabled><span class="code">${c}</span><span>${esc(ACC[c])}</span><small>${rev?'resposta':'correcte'}</small></button>`;
+    const bad = [...S.bad[i]].sort((a,b)=>a-b);
+    return `<div class="slotcard" data-card="${i}"><p class="slotq">${esc(s[1])}</p>${btn}${bad.length&&!done?`<p class="badn">Ja descartats aquí: ${bad.join(', ')}</p>`:''}</div>`;
+  }).join('');
+  h += `</div><div class="ocol"><h3>Comptes disponibles</h3><div class="list">` + S.order.map(c=>{
+    const used = placed.has(c);
+    return `<button type="button" class="opt chip${S.pick===c?' sel':''}${used?' used':''}" data-act="chip" data-v="${c}" data-code="${c}" aria-pressed="${S.pick===c}"${(done||used||S.busy)?' disabled':''}><span class="code">${c}</span><span>${esc(ACC[c])}</span></button>`;
+  }).join('') + `</div></div></div>`;
+  h += `<p class="warn" role="alert">${esc(S.note)}</p>`;
+  return h;
+}
+function renderGame(){
+  const ph=S.phase, id=S.ids[S.qi], op = ph>=2?OPS[id]:null, done=S.stage==='done';
+  const label = S.tb ? "Desempat · Operació completa" : PHASE_NAMES[ph];
+  let h = `<div class="qhead"><span class="eyebrow">${label}</span><span class="qcount">Pregunta ${S.qi+1} de ${S.total}</span></div>`;
+  h += `<div class="dots">` + Array.from({length:S.total},(_,i)=>`<i class="${(i<S.qi||(i===S.qi&&done))?'d':i===S.qi?'c':''}"></i>`).join('') + `</div>`;
+
+  if(S.stage==='ask'){
+    const t=activeTeam();
+    h += `<div class="turn t${t}"><span>Torn de <b>${esc(S.names[t])}</b></span><span class="worth">+${pts()} si l'encerta</span></div>`;
+  } else if(S.stage==='steal'){
+    const t=activeTeam(), prev=S.pool[(S.own+S.att-1)%S.pool.length], lastChance=S.att===maxTry()-1;
+    h += `<div class="turn t${t} steal"><span><b>Rebot!</b> ${esc(S.names[prev])} ha fallat. <b>${esc(S.names[t])}</b> pot robar els punts${lastChance?'. Última oportunitat!':'.'}</span><span class="worth">+${pts()}</span></div>`;
+  }
+  h += `<p class="qtext">${esc(ph===1?DATA[id][0]:op.t)}</p>`;
+
+  if(ph===1){
+    const correct = DATA[id][1];
+    h += `<p class="ask">A quina massa patrimonial pertany?</p><div class="bal">
+      <div class="side"><h3>Actiu</h3>${MASS_LEFT.map(m=>massBtn(m,done,correct)).join('')}</div>
+      <div class="side r"><h3>Patrimoni net i passiu</h3>${MASS_RIGHT.map(m=>massBtn(m,done,correct)).join('')}</div></div>`;
+  } else if(ph===2){
+    h += matchHtml(done);
+  } else {
+    const n = op.sets[0].length, right = new Set(op.sets[0]);
+    h += `<p class="ask"><span>Tria els ${n} comptes que hi intervenen</span><span class="cnt" id="cnt"></span></p><div class="accs">` +
+      S.order.map(c=>{
+        const r = done && right.has(c);
+        const cls = 'opt' + (r?' right':'') + (done&&!r?' dim':'') + (!done&&S.sel.has(c)?' sel':'');
+        return `<button type="button" class="${cls}" data-act="acc" data-v="${c}" aria-pressed="${S.sel.has(c)}"${done?' disabled':''}><span class="code">${c}</span><span>${esc(ACC[c])}</span></button>`;
+      }).join('') + `</div>`;
+    if(!done) h += `<div class="actions"><button class="btn" type="button" id="btn-check" data-act="check" disabled>Comprova</button></div>`;
+  }
+
+  if(done){
+    const correctTxt = ph===1 ? `Resposta: <b>${esc(DATA[id][1])}</b>.` : esc(op.e);
+    if(S.winner>=0){
+      h += `<div class="verdict yes"><span class="vt">Encertat! ${esc(S.names[S.winner])} suma +${S.won}</span>${correctTxt}</div>`;
+    } else {
+      h += `<div class="verdict none"><span class="vt">${S.pool.length>1?"Ningú l'ha encertat":"Aquesta no ha sortit"}</span>${correctTxt}</div>`;
+    }
+    h += `<div class="actions"><button class="btn" type="button" data-act="next">${S.qi===S.total-1?'Acabar la fase':'Següent pregunta'} →</button></div>`;
+  }
+  $('v-game').innerHTML = h;
+  if(ph===3 && !done) updateCount();
+  if(S.rf){ const el=document.querySelector(S.rf); if(el && !el.disabled) el.focus({preventScroll:true}); S.rf=null; }
+}
+function updateCount(){
+  const n = OPS[S.ids[S.qi]].sets[0].length;
+  $('cnt').textContent = `${S.sel.size} de ${n} triats`;
+  const b=$('btn-check'); if(b) b.disabled = S.sel.size!==n;
+}
+
+function resolve(ok){
+  const team = activeTeam();
+  if(ok){
+    const p = pts(); S.scores[team]+=p; S.pop={team,pts:p}; S.winner=team; S.won=p; S.stage='done'; sfx('ok');
+  } else {
+    S.att++; S.sel=new Set(); sfx('bad');
+    if(S.att>=maxTry()){ S.stage='done'; S.winner=-1; } else S.stage='steal';
+  }
+  renderAll();
+}
+
+/* ---------- FASE 2: col·locar comptes (es valida a l'instant) ---------- */
+function placeCode(i, code){
+  if(S.stage==='done' || S.lock[i] || S.busy) return;
+  S.pick = null;
+  if(S.slots[i][0]===code){                         // encert: el compte es queda enganxat en verd
+    S.place[i]=code; S.lock[i]=true; S.note='';
+    if(S.lock.every(Boolean)){ resolve(true); return; }
+    sfx('ok'); renderGame(); return;
+  }
+  // error: es veu en vermell uns instants, surt un missatge i el compte torna a la llista
+  S.bad[i].add(code); S.errs++;
+  const over = S.errs > S.allow, inOp = S.slots.some(s=>s[0]===code);
+  S.note = `El ${code} (${ACC[code]}) no va aquí. ` + (inOp ? "Aquest compte sí que intervé en l'operació, però no respon a aquesta pregunta. " : "Aquest compte no intervé en aquesta operació. ") + (over ? "Heu esgotat els errors permesos: el torn rebota." : "Pensa-ho bé i prova una altra cosa!");
+  S.busy=true; S.flash={slot:i, code}; sfx('bad'); renderGame();
+  const tok=S.tok;
+  setTimeout(()=>{ if(S.tok!==tok) return; S.busy=false; S.flash=null; if(over) passTurn(); else renderGame(); }, 1700);
+}
+function passTurn(){                                 // massa errors: el torn passa al següent equip, que continua des d'on ho han deixat
+  S.att++; S.errs=0; S.pick=null; S.note='';
+  if(S.att>=maxTry()){                                // ningú ho ha resolt: es mostra la resposta
+    S.slots.forEach((s,i)=>{ if(!S.lock[i]){ S.place[i]=s[0]; S.rev[i]=true; } });
+    S.stage='done'; S.winner=-1;
+  } else S.stage='steal';
+  renderAll();
+}
+/* arrossegar amb ratolí o dit (events de punter) */
+let drag=null, lastDrag=0;
+const cardAt = (x,y) => { const el=document.elementFromPoint(x,y); const c=el&&el.closest?el.closest('[data-card]'):null; return c?Number(c.dataset.card):null; };
+document.addEventListener('pointerdown',e=>{
+  if(S.phase!==2 || S.stage==='done' || S.busy || (e.button!==undefined && e.button>0)) return;
+  const el = e.target.closest ? e.target.closest('[data-act="chip"]') : null;
+  if(!el || el.disabled) return;
+  drag = {code:Number(el.dataset.code), x:e.clientX, y:e.clientY, moved:false, el, ghost:null};
+});
+document.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  if(!drag.moved){
+    if(Math.hypot(e.clientX-drag.x, e.clientY-drag.y)<8) return;
+    drag.moved=true;
+    const g=document.createElement('div'); g.className='ghost'; g.innerHTML=drag.el.innerHTML; document.body.appendChild(g); drag.ghost=g;
+    drag.el.classList.add('lifted');
+  }
+  drag.ghost.style.left=e.clientX+'px'; drag.ghost.style.top=e.clientY+'px';
+  document.querySelectorAll('.slotcard.over').forEach(n=>n.classList.remove('over'));
+  const c=cardAt(e.clientX,e.clientY);
+  if(c!==null && !S.lock[c]){ const n=document.querySelector(`[data-card="${c}"]`); if(n) n.classList.add('over'); }
+});
+function endDrag(e, cancelled){
+  if(!drag) return;
+  const d=drag; drag=null;
+  if(d.ghost) d.ghost.remove();
+  document.querySelectorAll('.slotcard.over').forEach(n=>n.classList.remove('over'));
+  d.el.classList.remove('lifted');
+  if(!d.moved) return;           // era un clic: el gestiona l'handler de clic
+  lastDrag=Date.now();
+  if(cancelled) return;
+  const c=cardAt(e.clientX,e.clientY);
+  if(c!==null && !S.lock[c]) placeCode(c, d.code);   // si es deixa fora de les preguntes, no passa res
+}
+document.addEventListener('pointerup',e=>endDrag(e,false));
+document.addEventListener('pointercancel',e=>endDrag(e,true));
+
+function leaders(){ const mx=Math.max(...S.scores); return S.scores.map((s,i)=>s===mx?i:-1).filter(i=>i>=0); }
+const joinNames = L => { const a=L.map(i=>esc(S.names[i])); return a.length>1 ? a.slice(0,-1).join(', ')+' i '+a[a.length-1] : a[0]; };
+function endPhase(){
+  const last = S.pi >= S.plan.length-1;
+  if(S.tb || last){ showFinal(); return; }
+  const nx = S.plan[S.pi+1];
+  const g=S.scores.map((s,i)=>s-S.phaseStart[i]);
+  const L=leaders();
+  const lead = S.n===1 ? `Porteu ${S.scores[0]} punts.` : L.length===S.n ? "Empat a punts. Tot per decidir!" : L.length>1 ? `Van al davant, empatats: ${joinNames(L)}.` : `Va al davant ${esc(S.names[L[0]])}.`;
+  $('v-inter').innerHTML = `<p class="eyebrow">Final de la Fase ${S.phase}</p><h2>Fase superada!</h2>
+    <div class="gains" style="grid-template-columns:repeat(${S.n},1fr)">${S.scores.map((_,i)=>`<div class="t${i}">${esc(S.names[i])}<b>+${g[i]}</b>punts en aquesta fase</div>`).join('')}</div>
+    <p style="font-weight:800;margin:4px 0 0;">${lead}</p>
+    <p class="note" style="margin:0;">Ara toca la Fase ${nx}: ${PHASE_DESC[nx]} Cada encert val ${BASE[nx]} punts.</p>
+    <button class="btn" type="button" data-act="nextphase">Passem a la Fase ${nx} →</button>`;
+  show('inter'); renderBoard(-1,[]);
+}
+function showFinal(){
+  const L=leaders(), n=S.n, mx=S.scores[L[0]], tie=n>1 && L.length>1;
+  const order=S.scores.map((_,i)=>i).sort((a,b)=>S.scores[b]-S.scores[a]);
+  const rank = n>1 ? `<div class="rank">${order.map((i,p)=>`<div class="t${i}"><span>${p+1}.</span><span>${esc(S.names[i])}</span><b>${S.scores[i]}</b></div>`).join('')}</div>` : '';
+  renderBoard(-1, (n>1 && !tie) ? L : []);
+  let h;
+  if(n===1){
+    h = `<p class="eyebrow">Resultat final</p><p class="big">Heu fet ${mx} punts!</p><p style="font-weight:700;margin:0;">Torneu-ho a provar per superar la vostra marca.</p>
+       <div class="row"><button class="btn" type="button" data-act="again">Torna a jugar</button><button class="btn sec" type="button" data-act="setup">Canvia la configuració</button></div>`;
+  } else if(tie){
+    h = `<p class="eyebrow">Resultat final</p><p class="big">Empat a ${mx} punts!</p><p style="font-weight:700;margin:0;">${joinNames(L)} estan igualats. Voleu desempatar amb ${Math.max(2,L.length)} preguntes més?</p>${rank}
+       <div class="row"><button class="btn" type="button" data-act="tie">Ronda de desempat</button><button class="btn sec" type="button" data-act="again">Torna a jugar</button></div>`;
+  } else {
+    const w=order[0];
+    h = `<p class="eyebrow">Resultat final</p><p class="big">Guanya ${esc(S.names[w])}!</p>
+       <p style="font-weight:800;font-size:1.2rem;margin:0;">${S.scores[w]} punts, ${S.scores[w]-S.scores[order[1]]} més que el segon equip.</p>${rank}
+       <div class="row"><button class="btn" type="button" data-act="again">Revenja amb els mateixos equips</button><button class="btn sec" type="button" data-act="setup">Canvia els equips</button></div>`;
+  }
+  $('v-final').innerHTML = h;
+  show('final');
+  if(!tie){ sfx('win'); confetti(); }
+}
+function confetti(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const c=$('confetti'), x=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const cols=[css('--ta'),css('--tb'),css('--gold'),css('--brand')];
+  const P=Array.from({length:150},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,s:6+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*4|0]}));
+  let f=0;
+  (function t(){
+    x.clearRect(0,0,c.width,c.height);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++f<230) requestAnimationFrame(t); else x.clearRect(0,0,c.width,c.height);
+  })();
+}
+
+/* ---------- CONFIGURACIÓ ---------- */
+function setN(n){
+  S.n=n;
+  document.querySelectorAll('.num').forEach(b=>{ const on=Number(b.dataset.v)===n; b.classList.toggle('sel',on); b.setAttribute('aria-pressed',String(on)); });
+  for(let i=0;i<4;i++) $('f'+i).hidden = i>=n;
+  $('rule-turn').hidden = n===1;
+  $('rule-rb').textContent = n===1 ? "Jugueu sols: cada pregunta té una sola oportunitat."
+    : n===2 ? "Si l'equip falla, el torn rebota a l'altre, que pot robar la meitat dels punts."
+    : "Si l'equip falla, el torn rebota al següent i, si tampoc l'encerta, a un tercer. Cada rebot val la meitat dels punts. Si ningú l'encerta, es mostra la resposta i es passa a la pregunta següent.";
+  $('rule-end').textContent = n===1 ? "Intenteu fer el màxim de punts possible." : "Sempre comença l'Equip 1 i els torns van girant. Guanya l'equip amb més punts.";
+}
+
+function goHome(){ S.tok++; S.busy=false; S.flash=null; show('setup'); window.scrollTo(0,0); }
+
+/* ---------- ACCIONS (un sol listener al document) ---------- */
+function act(a,v){
+  if(a==='start') startGame();
+  else if(a==='mute'){ muted=!muted; $('btn-mute').textContent = muted?'So: no':'So: sí'; }
+  else if(a==='n') setN(Number(v));
+  else if(a==='mass'){
+    if(S.stage==='done') return;
+    const ok = v===DATA[S.ids[S.qi]][1];
+    if(!ok) S.elim.add(v);
+    resolve(ok);
+  }
+  else if(a==='chip'){
+    if(S.stage==='done' || S.busy) return;
+    const c=Number(v); S.pick = S.pick===c ? null : c;
+    S.rf = `[data-act="chip"][data-v="${c}"]`; renderGame();
+  }
+  else if(a==='slot'){
+    const i=Number(v);
+    if(S.stage==='done' || S.busy || S.lock[i] || S.pick===null) return;
+    S.rf=`[data-act="slot"][data-v="${i}"]`; placeCode(i,S.pick);
+  }
+  else if(a==='acc'){
+    if(S.stage==='done') return;
+    const c=Number(v); S.sel.has(c)?S.sel.delete(c):S.sel.add(c);
+    const b=document.querySelector(`[data-act="acc"][data-v="${c}"]`);
+    if(b){ b.classList.toggle('sel',S.sel.has(c)); b.setAttribute('aria-pressed',String(S.sel.has(c))); }
+    updateCount();
+  }
+  else if(a==='check'){
+    const op=OPS[S.ids[S.qi]];
+    if(S.stage==='done' || S.sel.size!==op.sets[0].length) return;
+    resolve(op.sets.some(s=>s.length===S.sel.size && s.every(c=>S.sel.has(c))));
+  }
+  else if(a==='next'){ S.qi++; nextQ(); }
+  else if(a==='nextphase'){ S.pi++; beginPhase(); }
+  else if(a==='tie') beginTiebreak();
+  else if(a==='again') resetMatch();
+  else if(a==='setup') goHome();
+  else if(a==='home'){ if(S.view==='game' || S.view==='inter') $('confirm').hidden=false; else goHome(); } // a mitja partida es demana confirmació
+  else if(a==='home-yes') goHome();
+  else if(a==='home-no') $('confirm').hidden=true;
+}
+setN(2);
+document.addEventListener('click',e=>{
+  if(Date.now()-lastDrag<120) return; // el clic que segueix a un arrossegament no compta
+  const b = e.target.closest ? e.target.closest('[data-act]') : null;
+  if(b && !b.disabled) act(b.dataset.act, b.dataset.v);
+});
+})();
+</script>
+
+</body></html>
